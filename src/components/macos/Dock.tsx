@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Folder, Mail, Chrome, Music, Image, Settings, Trash2, AppWindow } from 'lucide-react';
+import { Folder, User, Activity, Briefcase, SquareArrowUp, Contact, Trash2, AppWindow } from 'lucide-react';
 
 interface DockApp {
   id: string;
@@ -16,13 +16,13 @@ const Dock = ({ onAppClick = () => {} }: DockProps) => {
   const [hoveredApp, setHoveredApp] = useState<string | null>(null);
 
   const apps: DockApp[] = [
-    { id: 'about', name: 'About', icon: <Mail className="w-full h-full" /> },
+    { id: 'about', name: 'About', icon: <User className="w-full h-full" /> },
     { id: 'projects', name: 'Projects', icon: <Folder className="w-full h-full" /> },
-    { id: 'activities', name: 'Activities', icon: <Chrome className="w-full h-full" /> },
-    { id: 'career', name: 'Career', icon: <Music className="w-full h-full" /> },
-    { id: 'links', name: 'Links', icon: <Image className="w-full h-full" /> },
+    { id: 'activities', name: 'Activities', icon: <Activity className="w-full h-full" /> },
+    { id: 'career', name: 'Career', icon: <Briefcase className="w-full h-full" /> },
+    { id: 'links', name: 'Links', icon: <SquareArrowUp className="w-full h-full" /> },
     { id: 'terminal', name: 'Terminal', icon: <AppWindow className="w-full h-full" /> },
-    { id: 'contact', name: 'Contact', icon: <Settings className="w-full h-full" /> },
+    { id: 'contact', name: 'Contact', icon: <Contact className="w-full h-full" /> },
   ];
 
   const trashApp: DockApp = {

@@ -49,7 +49,7 @@ const Window = ({
   const [isResizing, setIsResizing] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [selectedSidebar, setSelectedSidebar] = useState('tomatoagent');
-  const [selectedColumn1, setSelectedColumn1] = useState<string | null>(null);
+  const [selectedColumn1, setSelectedColumn1] = useState<string | null>("1");
   // const [selectedColumn2, setSelectedColumn2] = useState<Object | null>(null);
   const [isAnimating, setIsAnimating] = useState(isNew);
   
@@ -75,7 +75,7 @@ const Window = ({
 
 ## 구현 기능
 
-- OpenAI api를 이용한 agent 구성
+- OpenAI api를 이용한 agent 구성(langchain X)
 - fastAPI 서버 구성
 - fastAPI middleware 구성
 - docker-swarm을 이용한 오케스트레이션 서버 구현
@@ -138,6 +138,11 @@ const Window = ({
 - k8s
 
 ## 아키텍쳐
+- aws infra
+![img](https://github.com/Oldentomato/astro-paper/blob/main/src/data/images/1760978291053-infra.png?raw=true)  
+- 보안을 고려한 이중 alb 구성(내부용 alb는 vpn을 통해 접속)  
+- terraform과 ansible을 이용하여 배포  
+- vpn을 이용하여 외부 gpu서버와 연결 구축  
 
 ## 트러블 슈팅
 

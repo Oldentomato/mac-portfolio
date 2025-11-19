@@ -14,6 +14,7 @@ import ContactComponent from './windows/contact';
 interface WindowItem {
   id: string;
   title: string;
+  initialPosition: {x: number; y: number} | null;
   type: 'finder' | 'terminal';
   isNew: boolean;
   zIndex: number;
@@ -22,9 +23,13 @@ interface WindowItem {
 }
 
 const Home = () => {
-  const [windows, setWindows] = useState<WindowItem[]>([]);
+  const [windows, setWindows] = useState<WindowItem[]>([
+    { id: 'initial-1', title: 'About', type: 'finder', isNew: true, zIndex: 10, initialPosition: {x: 100, y: 100}, initialSize:{ width: 1000, height: 500 }, children: <AboutComponent /> },
+    { id: 'initial-2', title: 'Projects', type: 'finder', isNew: true, zIndex: 11, initialPosition: {x: 1200, y: 100}, initialSize:{ width: 1200, height: 800 }, children: null },
+    { id: 'initial-3', title: 'Links', type: 'finder', isNew: true, zIndex: 12, initialPosition: {x: 100, y: 700}, initialSize:{ width: 900, height: 330 }, children: <LinksComponent /> },
+  ]);
   const [spotlightOpen, setSpotlightOpen] = useState(false);
-  const [maxZIndex, setMaxZIndex] = useState(10);
+  const [maxZIndex, setMaxZIndex] = useState(12);
   const [isLocked, setIsLocked] = useState(true);
   const [time, setTime] = useState<string>("");
 
@@ -72,43 +77,43 @@ const Home = () => {
     if (appId === 'projects') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Projects', type: 'finder', isNew: true, zIndex: newZIndex, initialSize:{ width: 1200, height: 800 }, children: null },
+        { id: `window-${Date.now()}`, title: 'Projects', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 1200, height: 800 }, children: null },
       ]);
     }
     else if (appId == 'about') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'About', type: 'finder', isNew: true, zIndex: newZIndex, initialSize: {width: 1000, height: 500}, children: <AboutComponent /> },
+        { id: `window-${Date.now()}`, title: 'About', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize: {width: 1000, height: 500}, children: <AboutComponent /> },
       ]);
     }
     else if (appId == 'activities') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Activities', type: 'finder', isNew: true, zIndex: newZIndex, initialSize:{ width: 900, height: 800 }, children: <ActivityComponent /> },
+        { id: `window-${Date.now()}`, title: 'Activities', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 800 }, children: <ActivityComponent /> },
       ]);
     }
     else if (appId == 'career') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Career', type: 'finder', isNew: true, zIndex: newZIndex, initialSize:{ width: 900, height: 650 }, children: <CareerComponent /> },
+        { id: `window-${Date.now()}`, title: 'Career', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 650 }, children: <CareerComponent /> },
       ]);
     }
     else if (appId == 'links') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Links', type: 'finder', isNew: true, zIndex: newZIndex, initialSize:{ width: 900, height: 330 }, children: <LinksComponent /> },
+        { id: `window-${Date.now()}`, title: 'Links', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 330 }, children: <LinksComponent /> },
       ]);
     }
     else if (appId == 'contact') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Contact', type: 'finder', isNew: true, zIndex: newZIndex, initialSize:{ width: 900, height: 500 }, children: <ContactComponent /> },
+        { id: `window-${Date.now()}`, title: 'Contact', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 500 }, children: <ContactComponent /> },
       ]);
     }
     else if (appId == 'terminal') {
       setWindows((prev) => [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Terminal', type: 'terminal', isNew: true, zIndex: newZIndex, initialSize:{ width: 900, height: 600 }, children: null },
+        { id: `window-${Date.now()}`, title: 'Terminal', type: 'terminal', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 600 }, children: null },
       ]);
     }
     else if (appId == 'trash') {
@@ -181,7 +186,7 @@ const Home = () => {
               key={window.id}
               title={window.title}
               onClose={() => handleCloseWindow(window.id)}
-              initialPosition={{
+              initialPosition={window.initialPosition !== null ? window.initialPosition : {
                 x: 100 + index * 30,
                 y: 100 + index * 30,
               }}

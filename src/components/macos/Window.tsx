@@ -64,11 +64,12 @@ const Window = ({
   }, [isNew]);
 
   const sidebarItems = [
-    { id: 'recent', label: 'Recent', items: ['infra', 'tomatoAgent', 'Meaire', 'blogUploader', 'VPModel'] },
+    { id: 'recent', label: 'Recent', items: ['tomatoAgent_v3', 'infra', 'tomatoAgent', 'Meaire', 'blogUploader', 'VPModel'] },
     { id: 'legacy', label: 'Legacy', items: ['Instagram', 'MSGGuard', 'CodeEncryption', 'LegacyPortfolio'] },
   ];
 
   const projectFiles: Record<string, FileItem[]> = {
+    tomatoagent_v3: getContent("tomatoagent_v3"),
     infra: getContent("infra"),
     tomatoagent: getContent("tomatoagent"),
     meaire: getContent("meaire"),

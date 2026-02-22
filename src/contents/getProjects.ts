@@ -1,13 +1,74 @@
 import meaireImage from '../assets/dddd.png'
 import infraImage from '../assets/infra.png'
 import argoImage from '../assets/argocd.png'
+import googleImage from '../assets/google_login.png'
+import codeArchiveImage from '../assets/code_archive.png'
+import treeConversation from '../assets/tree_conversation.png'
 import argoViewImage from '../assets/argo_view.png'
 
 export default function getContent(category: string) {
     const contents = {
+        tomatoagent_v3: [
+          { id: '1', name: 'Description', type: 'folder', children: {id: '1-1', title: 'TomatoAgent_v3', techStack:["langgraph","fastAPI","AG-UI","Copilotkit"], content: `
+![img](https://cdn.sanity.io/images/y3fjfzcd/production/fbf7f2a80006d5ea30c4a2adc88829ff6f951c09-1601x1041.png) 
+기존의 tomatoAgent의 개선 버전
+
+## 개선 사항
+- 3-layer 계층형 아키텍처로 백엔드를 책임 분리형으로 구현
+- langgraph를 이용하여 agent를 견고하게 구축
+- copilotkit과 연동을 위한 AG-UI 프로토콜을 custom하게 구성
+- 자유로운 대화flow를 위해 neo4j를 이용하여 트리형 대화체계를 구성
+- 구글 로그인 도입
+- 업그레이드된 codeArchive
+
+## 아키텍처  
+- 구글 로그인 구성도
+![img](${googleImage})
+
+
+- tree형 대화 체계
+![img](${treeConversation})
+  - 같은 주제에 여러 세부 주제로 대화가 가능함
+  - 이러면 이전 대화내역에 어지럽히지 않은 일관적인 대화를 할 수 있음
+  - 기존의 사정 설명을 여러번 재활용이 가능함
+
+- langgraph codeArchive 구성도 
+![img](${codeArchiveImage})  
+- 추후 다른 graph도 추가예정
+
+
+## 트러블 슈팅
+- langgraph의 대화내역 저장 로직문제(langgraph의 memorysaver를 사용못함)
+
+    neo4j는 langgraph의 memory saver로 구성되어있지 않기 때문에 load chat history 와 persist chat history 노드를 각각 만들어 graph시작점과 끝점에 실행되도록 구성함
+
+- ag-ui 프로토콜의 활용(state나 config로 db나 minio를 넘겨야하는 문제)
+
+    copilotkit blog 게시글을 참조하여 커스텀 엔드포인트를 구성
+
+- front의 copilotkit이 백엔드와 연결이 안됨
+ 
+    @ag-ui/client의 버전 문제로 CopilotRuntime 클래스의 agents를 제대로 읽지 못하는 오류였음(버전 변경으로 해결)
+
+## 기술스택 
+- langgraph
+- fastAPI
+- AG-UI
+- neo4j
+- faiss
+- postgresql
+- redis
+- copilotkit
+            
+            `}
+          },
+          { id: '3', name: '2026-01-19.startDate', type: 'file' },
+          { id: '4', name: 'still.endDate', type: 'file' }, 
+          { id: '5', name: 'github 이동', link:'https://github.com/Oldentomato/tomatoAgent_v3', type: 'link' },
+        ],
         infra: [
             { id: '1', name: 'Description', type: 'folder', children: {id: '1-1', title: 'HomeServer Infra', techStack:["k8s","argoCD","docker","network","wsl2"], content: `
-![img](https://joojae.com/content/images/2025/10/Kubernetes-Logo.png) 
+![img](https://hoing.io/storage/2021/08/Kubernetes_Logo-3_m.png) 
 홈서버를 이용하여 서비스 구축 및 배포
 synology NAS로 DB와 테스트서버 구축
 Dell Workstation과 GPU를 이용한 LLM용 GPU서버를 설치, 그리고 k8s로 서비스 구축

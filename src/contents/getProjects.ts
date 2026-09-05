@@ -110,9 +110,7 @@ Argo CD가 공통 차트와 values를 합쳐 워크로드를 맞춘다.
 - 포트폴리오 웹
 - Tomato Board
 - 마크다운 블로그 업로더 (개인용)
-- LLM 학습 서버, vLLM FastAPI (개인용)
-- Portainer (개인용)
-- Traefik reverse proxy
+- Tomato Stusio (개인용)
 `}
       },
       { id: '3', name: '2025-10-01.startDate', type: 'file' },

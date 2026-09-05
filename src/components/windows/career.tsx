@@ -11,6 +11,14 @@ interface CareerItem {
 
 const careers: CareerItem[] = [
   {
+    company: "AiTStory",
+    position: "AI Agent Developer",
+    period: "2026.03 - ",
+    description:
+      "AI Agent개발과 파이썬 서버 & 인프라 구축 담담",
+    techStack: ["Python", "GCP ADK", "Docker", "FastAPI"],
+  },
+  {
     company: "UINetworks",
     position: "Python Developer",
     period: "2023.09 - 2024.12",
@@ -25,7 +33,7 @@ const careers: CareerItem[] = [
     description:
       "VP Model 환경을 구축 및 벤치마킹, 결과 데이터 기반 영상에 적용하여 시각화",
     techStack: ["Python", "ROS2", "Computer Vision", "Ubuntu"],
-  },
+  }
 ];
 
 const CareerComponent: React.FC = () => {

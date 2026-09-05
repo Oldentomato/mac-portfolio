@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Minus, Maximize2 } from 'lucide-react';
+import { useWindowFrame } from '@/lib/useWindowFrame';
 
 interface TerminalProps {
   title?: string;
@@ -25,19 +26,15 @@ const Terminal = ({
   zIndex = 10,
   onFocus = () => {},
 }: TerminalProps) => {
-  const [position, setPosition] = useState(initialPosition);
-  const [size, setSize] = useState(initialSize);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isAnimating, setIsAnimating] = useState(isNew);
   const [currentInput, setCurrentInput] = useState('');
   const [history, setHistory] = useState<CommandOutput[]>([
     { command: '', output: ['Last login: ' + new Date().toLocaleString(), "Enter 'help' to show this help message"] }
   ]);
   const [currentDir, setCurrentDir] = useState('~');
-  
-  const windowRef = useRef<HTMLDivElement>(null);
+
+  const { windowRef, position, size, isDragging, isResizing, startDrag, startResize } =
+    useWindowFrame(initialPosition, initialSize);
   const inputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -157,61 +154,14 @@ const Terminal = ({
     onFocus();
     if ((e.target as HTMLElement).closest('.window-controls')) return;
     if ((e.target as HTMLElement).closest('.terminal-content')) return;
-    setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
+    startDrag(e);
   };
-
-  const handleResizeMouseDown = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsResizing(true);
-  };
-
-  const handleWindowClick = () => {
-    onFocus();
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        setPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y,
-        });
-      }
-      if (isResizing) {
-        const newWidth = e.clientX - position.x;
-        const newHeight = e.clientY - position.y;
-        setSize({
-          width: Math.max(400, newWidth),
-          height: Math.max(300, newHeight),
-        });
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      setIsResizing(false);
-    };
-
-    if (isDragging || isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, isResizing, dragOffset, position]);
 
   return (
     <div
       ref={windowRef}
-      onClick={handleWindowClick}
-      className={`fixed bg-black/95 backdrop-blur-xl rounded-lg shadow-2xl overflow-hidden transition-all duration-300 ${
+      onClick={() => onFocus()}
+      className={`fixed bg-black/95 backdrop-blur-xl rounded-lg shadow-2xl overflow-hidden ${
         isAnimating ? 'animate-window-open' : ''
       }`}
       style={{
@@ -220,6 +170,7 @@ const Terminal = ({
         width: `${size.width}px`,
         height: `${size.height}px`,
         zIndex: zIndex,
+        willChange: isDragging || isResizing ? 'left, top, width, height' : undefined,
       }}
     >
       {/* Title bar */}
@@ -293,7 +244,7 @@ const Terminal = ({
       {/* Resize handle */}
       <div
         className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"
-        onMouseDown={handleResizeMouseDown}
+        onMouseDown={startResize}
       />
     </div>
   );

@@ -10,6 +10,8 @@ import ActivityComponent from './windows/activityTimeLine';
 import CareerComponent from './windows/career';
 import LinksComponent from './windows/links';
 import ContactComponent from './windows/contact';
+import ProjectsComponent from './windows/projects';
+import { cascadePosition, fitSize, initialDesktopLayout } from '@/lib/windowLayout';
 
 interface WindowItem {
   id: string;
@@ -22,12 +24,25 @@ interface WindowItem {
   children: ReactNode | null; 
 }
 
+const APP_LAYOUT: Record<string, { width: number; height: number; w: number; h: number }> = {
+  projects: { width: 1200, height: 800, w: 0.72, h: 0.88 },
+  about: { width: 1000, height: 500, w: 0.58, h: 0.52 },
+  activities: { width: 900, height: 800, w: 0.55, h: 0.86 },
+  career: { width: 900, height: 650, w: 0.55, h: 0.72 },
+  links: { width: 900, height: 330, w: 0.5, h: 0.4 },
+  contact: { width: 900, height: 500, w: 0.52, h: 0.55 },
+  terminal: { width: 900, height: 600, w: 0.55, h: 0.65 },
+};
+
 const Home = () => {
-  const [windows, setWindows] = useState<WindowItem[]>([
-    { id: 'initial-1', title: 'About', type: 'finder', isNew: true, zIndex: 10, initialPosition: {x: 100, y: 100}, initialSize:{ width: 1000, height: 500 }, children: <AboutComponent /> },
-    { id: 'initial-2', title: 'Projects', type: 'finder', isNew: true, zIndex: 11, initialPosition: {x: 1200, y: 100}, initialSize:{ width: 1200, height: 800 }, children: null },
-    { id: 'initial-3', title: 'Links', type: 'finder', isNew: true, zIndex: 12, initialPosition: {x: 100, y: 700}, initialSize:{ width: 900, height: 330 }, children: <LinksComponent /> },
-  ]);
+  const [windows, setWindows] = useState<WindowItem[]>(() => {
+    const layout = initialDesktopLayout();
+    return [
+      { id: 'initial-1', title: 'About', type: 'finder', isNew: true, zIndex: 10, initialPosition: layout.about.position, initialSize: layout.about.size, children: <AboutComponent /> },
+      { id: 'initial-2', title: 'Projects', type: 'finder', isNew: true, zIndex: 11, initialPosition: layout.projects.position, initialSize: layout.projects.size, children: <ProjectsComponent /> },
+      { id: 'initial-3', title: 'Links', type: 'finder', isNew: true, zIndex: 12, initialPosition: layout.links.position, initialSize: layout.links.size, children: <LinksComponent /> },
+    ];
+  });
   const [spotlightOpen, setSpotlightOpen] = useState(false);
   const [maxZIndex, setMaxZIndex] = useState(12);
   const [isLocked, setIsLocked] = useState(true);
@@ -71,54 +86,52 @@ const Home = () => {
   }, []);
 
   const handleAppClick = (appId: string) => {
+    if (appId == 'trash') {
+      setWindows([]);
+      return;
+    }
+
     const newZIndex = maxZIndex + 1;
     setMaxZIndex(newZIndex);
+    const spec = APP_LAYOUT[appId];
+    if (!spec) return;
 
-    if (appId === 'projects') {
-      setWindows((prev) => [
+    const titleMap: Record<string, string> = {
+      projects: 'Projects',
+      about: 'About',
+      activities: 'Activities',
+      career: 'Career',
+      links: 'Links',
+      contact: 'Contact',
+      terminal: 'Terminal',
+    };
+    const childMap: Record<string, ReactNode | null> = {
+      projects: <ProjectsComponent />,
+      about: <AboutComponent />,
+      activities: <ActivityComponent />,
+      career: <CareerComponent />,
+      links: <LinksComponent />,
+      contact: <ContactComponent />,
+      terminal: null,
+    };
+
+    setWindows((prev) => {
+      const size = fitSize({ width: spec.width, height: spec.height }, { w: spec.w, h: spec.h });
+      const position = cascadePosition(prev.length, size);
+      return [
         ...prev,
-        { id: `window-${Date.now()}`, title: 'Projects', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 1200, height: 800 }, children: null },
-      ]);
-    }
-    else if (appId == 'about') {
-      setWindows((prev) => [
-        ...prev,
-        { id: `window-${Date.now()}`, title: 'About', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize: {width: 1000, height: 500}, children: <AboutComponent /> },
-      ]);
-    }
-    else if (appId == 'activities') {
-      setWindows((prev) => [
-        ...prev,
-        { id: `window-${Date.now()}`, title: 'Activities', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 800 }, children: <ActivityComponent /> },
-      ]);
-    }
-    else if (appId == 'career') {
-      setWindows((prev) => [
-        ...prev,
-        { id: `window-${Date.now()}`, title: 'Career', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 650 }, children: <CareerComponent /> },
-      ]);
-    }
-    else if (appId == 'links') {
-      setWindows((prev) => [
-        ...prev,
-        { id: `window-${Date.now()}`, title: 'Links', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 330 }, children: <LinksComponent /> },
-      ]);
-    }
-    else if (appId == 'contact') {
-      setWindows((prev) => [
-        ...prev,
-        { id: `window-${Date.now()}`, title: 'Contact', type: 'finder', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 500 }, children: <ContactComponent /> },
-      ]);
-    }
-    else if (appId == 'terminal') {
-      setWindows((prev) => [
-        ...prev,
-        { id: `window-${Date.now()}`, title: 'Terminal', type: 'terminal', isNew: true, zIndex: newZIndex, initialPosition: null, initialSize:{ width: 900, height: 600 }, children: null },
-      ]);
-    }
-    else if (appId == 'trash') {
-      setWindows([]);
-    }
+        {
+          id: `window-${Date.now()}`,
+          title: titleMap[appId],
+          type: appId === 'terminal' ? 'terminal' : 'finder',
+          isNew: true,
+          zIndex: newZIndex,
+          initialPosition: position,
+          initialSize: size,
+          children: childMap[appId],
+        },
+      ];
+    });
   };
 
   const handleCloseWindow = (windowId: string) => {
@@ -180,16 +193,13 @@ const Home = () => {
       {/* Desktop area */}
       <div className="pt-6 h-full">
         {/* Windows */}
-        {windows.map((window, index) => (
+        {windows.map((window) => (
           window.type === 'finder' ? (
             <Window
               key={window.id}
               title={window.title}
               onClose={() => handleCloseWindow(window.id)}
-              initialPosition={window.initialPosition !== null ? window.initialPosition : {
-                x: 100 + index * 30,
-                y: 100 + index * 30,
-              }}
+              initialPosition={window.initialPosition ?? { x: 80, y: 48 }}
               initialSize={window.initialSize}
               children={window.children}
               isNew={window.isNew}
@@ -201,10 +211,8 @@ const Home = () => {
               key={window.id}
               title={window.title}
               onClose={() => handleCloseWindow(window.id)}
-              initialPosition={{
-                x: 150 + index * 30,
-                y: 150 + index * 30,
-              }}
+              initialPosition={window.initialPosition ?? { x: 80, y: 48 }}
+              initialSize={window.initialSize}
               isNew={window.isNew}
               zIndex={window.zIndex}
               onFocus={() => bringToFront(window.id)}
